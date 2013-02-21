@@ -84,10 +84,6 @@ public class TravailPratiqueNumeroUn {
 		solveur.read(m); // Lecture du modele par le solveur
 		// Si le solveur trouve une solution
 		if (solveur.solve()) {
-			System.out.println(f1 + " " + f2 + " " + f3 + " " + f4);
-			System.out.println(f5 + " " + f6 + " " + f7 + " " + f8);
-			System.out.println(f9 + " " + f10 + " " + f11 + " " + f12);
-			System.out.println(f13 + " " + f14 + " " + f15 + " " + f16);
 			System.out.println(solveur.getVar(f1).getVal() + " " + solveur.getVar(f2).getVal() + " " + solveur.getVar(f3).getVal() + " "
 					+ solveur.getVar(f4).getVal());
 			System.out.println(solveur.getVar(f5).getVal() + " " + solveur.getVar(f6).getVal() + " " + solveur.getVar(f7).getVal() + " "
@@ -110,8 +106,14 @@ public class TravailPratiqueNumeroUn {
 		cube4.add(new int[] { 1, 4, 4, 3 });
 		cube4.add(new int[] { 1, 3, 2, 4 });
 		cube4.add(new int[] { 1, 4, 2, 3 });
+		cube4.add(new int[] { 1, 2, 4, 1 });
+		cube4.add(new int[] { 1, 1, 4, 2 });
+		cube4.add(new int[] { 1, 1, 2, 4 });
+		cube4.add(new int[] { 1, 4, 2, 1 });
 		cube4.add(new int[] { 2, 4, 1, 3 });
 		cube4.add(new int[] { 2, 3, 1, 4 });
+		cube4.add(new int[] { 2, 4, 1, 1 });
+		cube4.add(new int[] { 2, 1, 1, 4 });
 		cube4.add(new int[] { 3, 4, 4, 1 });
 		cube4.add(new int[] { 3, 1, 4, 4 });
 		cube4.add(new int[] { 3, 2, 4, 1 });
@@ -122,6 +124,8 @@ public class TravailPratiqueNumeroUn {
 		cube4.add(new int[] { 4, 4, 3, 1 });
 		cube4.add(new int[] { 4, 1, 3, 2 });
 		cube4.add(new int[] { 4, 2, 3, 1 });
+		cube4.add(new int[] { 4, 1, 1, 2 });
+		cube4.add(new int[] { 4, 2, 1, 1 });
 		return cube4;
 	}
 
@@ -129,16 +133,20 @@ public class TravailPratiqueNumeroUn {
 		ArrayList<int[]> cube3 = new ArrayList<int[]>();
 		cube3.add(new int[] { 1, 4, 3, 2 });
 		cube3.add(new int[] { 1, 2, 3, 4 });
+		cube3.add(new int[] { 1, 4, 3, 4 });
 		cube3.add(new int[] { 2, 1, 4, 3 });
 		cube3.add(new int[] { 2, 3, 4, 1 });
 		cube3.add(new int[] { 2, 4, 4, 4 });
 		cube3.add(new int[] { 3, 2, 1, 4 });
 		cube3.add(new int[] { 3, 4, 1, 2 });
+		cube3.add(new int[] { 3, 4, 1, 4 });
 		cube3.add(new int[] { 4, 1, 2, 3 });
 		cube3.add(new int[] { 4, 3, 2, 1 });
 		cube3.add(new int[] { 4, 4, 4, 2 });
 		cube3.add(new int[] { 4, 2, 4, 4 });
 		cube3.add(new int[] { 4, 4, 2, 4 });
+		cube3.add(new int[] { 4, 3, 4, 1 });
+		cube3.add(new int[] { 4, 1, 4, 3 });
 		return cube3;
 	}
 
@@ -146,13 +154,17 @@ public class TravailPratiqueNumeroUn {
 		ArrayList<int[]> cube2 = new ArrayList<int[]>();
 		cube2.add(new int[] { 1, 4, 3, 3 });
 		cube2.add(new int[] { 1, 3, 3, 4 });
+		cube2.add(new int[] { 1, 2, 3, 2 });
 		cube2.add(new int[] { 2, 4, 2, 3 });
 		cube2.add(new int[] { 2, 3, 2, 4 });
+		cube2.add(new int[] { 2, 3, 2, 1 });
+		cube2.add(new int[] { 2, 1, 2, 3 });
 		cube2.add(new int[] { 3, 2, 4, 2 });
 		cube2.add(new int[] { 3, 3, 1, 4 });
 		cube2.add(new int[] { 3, 4, 1, 3 });
 		cube2.add(new int[] { 3, 1, 4, 3 });
 		cube2.add(new int[] { 3, 3, 4, 1 });
+		cube2.add(new int[] { 3, 2, 1, 2 });
 		cube2.add(new int[] { 4, 2, 3, 2 });
 		cube2.add(new int[] { 4, 3, 3, 1 });
 		cube2.add(new int[] { 4, 1, 3, 3 });
@@ -167,16 +179,24 @@ public class TravailPratiqueNumeroUn {
 		cube1.add(new int[] { 1, 1, 3, 2 });
 		cube1.add(new int[] { 1, 1, 2, 3 });
 		cube1.add(new int[] { 1, 3, 2, 1 });
+		cube1.add(new int[] { 1, 2, 3, 4 });
+		cube1.add(new int[] { 1, 4, 3, 2 });
 		cube1.add(new int[] { 2, 2, 4, 1 });
 		cube1.add(new int[] { 2, 1, 4, 2 });
 		cube1.add(new int[] { 2, 4, 1, 2 });
 		cube1.add(new int[] { 2, 2, 1, 4 });
 		cube1.add(new int[] { 2, 3, 1, 1 });
 		cube1.add(new int[] { 2, 1, 1, 3 });
+		cube1.add(new int[] { 2, 3, 4, 1 });
+		cube1.add(new int[] { 2, 1, 4, 3 });
 		cube1.add(new int[] { 3, 1, 1, 2 });
 		cube1.add(new int[] { 3, 2, 1, 1 });
+		cube1.add(new int[] { 3, 4, 1, 2 });
+		cube1.add(new int[] { 3, 2, 1, 4 });
 		cube1.add(new int[] { 4, 1, 2, 2 });
 		cube1.add(new int[] { 4, 2, 2, 1 });
+		cube1.add(new int[] { 4, 1, 2, 3 });
+		cube1.add(new int[] { 4, 3, 2, 1 });
 		return cube1;
 	}
 }
