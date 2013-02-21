@@ -50,7 +50,7 @@ public class TravailPratiqueNumeroUn {
 		// tableau représentant le cube 4
 		ArrayList<int[]> cube4 = prepareCube4();
 
-		// Ajout des variables dans le model
+		// Ajout des variables dans le modeld
 		m.addVariable(f1);
 		m.addVariable(f2);
 		m.addVariable(f3);
