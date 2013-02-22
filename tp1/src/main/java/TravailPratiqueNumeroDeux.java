@@ -1,149 +1,96 @@
 import static choco.Choco.*;
-import choco.Choco;
+import choco.Options;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
-import choco.cp.solver.search.integer.varselector.MinDomain;
 import choco.kernel.model.Model;
+import choco.kernel.model.variables.integer.IntegerConstantVariable;
+import choco.kernel.model.variables.integer.IntegerExpressionVariable;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.solver.Solver;
 
 public class TravailPratiqueNumeroDeux {
+	private static final int n = 5;
+	private static final int p = 16;
 
 	private static Model model;
-
-	// employé 1
-	private static IntegerVariable debut1;
-	private static IntegerVariable pause1;
-	private static IntegerVariable fin1;
-
-	// employé 2
-	private static IntegerVariable debut2;
-	private static IntegerVariable pause2;
-	private static IntegerVariable fin2;
-
-	// employé 3
-	private static IntegerVariable debut3;
-	private static IntegerVariable pause3;
-	private static IntegerVariable fin3;
-
-	// employé 4
-	private static IntegerVariable debut4;
-	private static IntegerVariable pause4;
-	private static IntegerVariable fin4;
-
-	// employé 5
-	private static IntegerVariable debut5;
-	private static IntegerVariable pause5;
-	private static IntegerVariable fin5;
+	private static Solver solveur;
+	private static IntegerVariable[] debuts;
+	private static IntegerVariable[] pauses;
+	private static IntegerVariable[] fins;
+	private static IntegerVariable[] offres;
+	private static IntegerConstantVariable[] demandes;
 
 	public static void main(String[] args) {
-		int n = 5;
-		int sommeMagique = n * (n * n + 1) / 2;
-		int p = 16;
-
 		model = new CPModel();
 
-		debut1 = makeIntVar("Début 1", 1, 7);
-		pause1 = makeIntVar("Pause 1", 5, 12);
-		fin1 = makeIntVar("Fin 1", 10, 16);
+		demandes = new IntegerConstantVariable[p];
+		demandes[0] = new IntegerConstantVariable(1);
+		demandes[1] = new IntegerConstantVariable(2);
+		demandes[2] = new IntegerConstantVariable(3);
+		demandes[3] = new IntegerConstantVariable(4);
+		demandes[4] = new IntegerConstantVariable(5);
+		demandes[5] = new IntegerConstantVariable(4);
+		demandes[6] = new IntegerConstantVariable(2);
+		demandes[7] = new IntegerConstantVariable(3);
+		demandes[8] = new IntegerConstantVariable(4);
+		demandes[9] = new IntegerConstantVariable(3);
+		demandes[10] = new IntegerConstantVariable(5);
+		demandes[11] = new IntegerConstantVariable(5);
+		demandes[12] = new IntegerConstantVariable(4);
+		demandes[13] = new IntegerConstantVariable(3);
+		demandes[14] = new IntegerConstantVariable(3);
+		demandes[15] = new IntegerConstantVariable(3);
 
-		addEmployeeVariableToModel(model, debut1, pause1, fin1);
-		addEmployeeConstraintToModel(model, debut1, pause1, fin1);
+		debuts = new IntegerVariable[n];
+		pauses = new IntegerVariable[n];
+		fins = new IntegerVariable[n];
+		for (int i = 0; i < n; i++) {
+			debuts[i] = makeIntVar("debut " + i, 0, 6);
+			pauses[i] = makeIntVar("pause " + i, 4, 11);
+			fins[i] = makeIntVar("fin " + i, 9, 15);
+			model.addVariable(debuts[i]);
+			model.addVariable(pauses[i]);
+			model.addVariable(fins[i]);
+			model.addConstraint(leq(minus(fins[i], debuts[i]), 14));
+			model.addConstraint(geq(minus(fins[i], debuts[i]), 10));
+			model.addConstraint(geq(minus(fins[i], pauses[i]), 4));
+			model.addConstraint(geq(minus(pauses[i], debuts[i]), 4));
+		}
 
-		debut2 = makeIntVar("Début 1", 1, 7);
-		pause2 = makeIntVar("Pause 1", 5, 12);
-		fin2 = makeIntVar("Fin 1", 10, 16);
-
-		addEmployeeVariableToModel(model, debut2, pause2, fin2);
-		addEmployeeConstraintToModel(model, debut2, pause2, fin2);
-
-		debut3 = makeIntVar("Début 1", 1, 7);
-		pause3 = makeIntVar("Pause 1", 5, 12);
-		fin3 = makeIntVar("Fin 1", 10, 16);
-
-		addEmployeeVariableToModel(model, debut3, pause3, fin3);
-		addEmployeeConstraintToModel(model, debut3, pause3, fin3);
-
-		debut4 = makeIntVar("Début 1", 1, 7);
-		pause4 = makeIntVar("Pause 1", 5, 12);
-		fin4 = makeIntVar("Fin 1", 10, 16);
-
-		addEmployeeVariableToModel(model, debut4, pause4, fin4);
-		addEmployeeConstraintToModel(model, debut4, pause4, fin4);
-
-		debut5 = makeIntVar("Début 1", 1, 7);
-		pause5 = makeIntVar("Pause 1", 5, 12);
-		fin5 = makeIntVar("Fin 1", 10, 16);
-
-		addEmployeeVariableToModel(model, debut5, pause5, fin5);
-		addEmployeeConstraintToModel(model, debut5, pause5, fin5);
-
-		// Construction du tableau d'offre
-		int[] offre = new int[p];
+		offres = new IntegerVariable[p];
 		for (int i = 0; i < p; i++) {
-			if (checkIfEmployeeOneIsWorking(i + 1, debut1, fin1, pause1)) {
-				offre[i]++;
-			}
-		}
-
-		// Declare une matrice de variables.
-		IntegerVariable[][] variablesParLigne = new IntegerVariable[n][n];
-		for (int i = 0; i < n; i++) {
+			offres[i] = makeIntVar("periode " + i, 1, 5);
+			model.addVariable(offres[i]);
+			IntegerExpressionVariable[] sommeOffre = new IntegerExpressionVariable[n];
 			for (int j = 0; j < n; j++) {
-				variablesParLigne[i][j] = Choco.makeIntVar("x[" + i + "][" + j + "]", 1, n * n);
-				model.addVariable(variablesParLigne[i][j]);
+				sommeOffre[j] = ifThenElse(and(geq(i, debuts[j]), leq(i, fins[j]), neq(i, pauses[j])), ONE, ZERO);
 			}
+			model.addConstraint(eq(offres[i], sum(sommeOffre)));
 		}
 
-		// On place toutes les varibles dans un vecteur
-		IntegerVariable[] vecteurVariables = new IntegerVariable[n * n];
-		for (int i = 0; i < n * n; i++) {
-			vecteurVariables[i] = variablesParLigne[i / n][i % n];
-		}
-		// On ajoute la contrainte allDifferent afin que les variables
-		// prennent des valeurs distinctes
-		model.addConstraint(Choco.allDifferent(vecteurVariables));
-
-		// Pour toutes les lignes de la matrice
-		for (int i = 0; i < n; i++) {
-			model.addConstraint(eq(sum(variablesParLigne[i]), sommeMagique));
+		// Calcul du coût pour chaque période
+		IntegerVariable[] cout = new IntegerVariable[p];
+		for (int i = 0; i < p; i++) {
+			cout[i] = makeIntVar("cout " + i, 0, 4);
+			model.addVariable(cout[i]);
+			model.addConstraint(eq(cout[i], abs(minus(offres[i], demandes[i]))));
 		}
 
-		// Cree la transpose de la matrice afin d'ajouter des contraintes
-		// sur les colonnes.
-		IntegerVariable[][] variablesParColonne = new IntegerVariable[n][n];
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				variablesParColonne[i][j] = variablesParLigne[j][i];
-			}
-			model.addConstraint(eq(sum(variablesParColonne[i]), sommeMagique));
-		}
+		IntegerVariable coutTotal = makeIntVar("Coût total", 0, 64, Options.V_OBJECTIVE);
+		model.addVariable(coutTotal);
+		model.addConstraint(eq(coutTotal, sum(cout)));
 
-		// Cree deux tableaux contenant les variables des deux diagonales
-		// de la matrice.
-		IntegerVariable[] variablesDiagonale1 = new IntegerVariable[n];
-		IntegerVariable[] variablesDiagonale2 = new IntegerVariable[n];
-		for (int i = 0; i < n; i++) {
-			variablesDiagonale1[i] = variablesParLigne[i][i];
-			variablesDiagonale2[i] = variablesParLigne[n - i - 1][i];
-		}
-		model.addConstraint(eq(sum(variablesDiagonale1), sommeMagique));
-		model.addConstraint(eq(sum(variablesDiagonale2), sommeMagique));
-
-		Solver solveur = new CPSolver(); // Creation du solveur
-		solveur.read(model); // Lecture du modele par le solveur
-		// Ajout de l'heuristique de choix de variables MinDomain. Cette
-		// heuristique choisit la variable avec le plus petit domaine.
-		solveur.setVarIntSelector(new MinDomain(solveur, solveur.getVar(vecteurVariables)));
-		// Si le solveur trouve une solution
-		if (solveur.solve()) {
-			// Affiche le carre magique
+		solveur = new CPSolver();
+		// Lecture du modele par le solveur
+		solveur.read(model);
+		// Le solveur minimize
+		if (solveur.minimize(true)) {
+			System.out.println("Le coût total est de : " + (solveur.getVar(coutTotal).getVal() * 20) + "$.");
 			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < n; j++) {
-					System.out.print(solveur.getVar(variablesParLigne[i][j]).getVal() + " ");
-				}
-				System.out.println("");
+				printScheduleForEmployee(i);
 			}
+			printOffre();
+			printDemande();
 		} else {
 			System.out.println("Aucune solution trouvee.");
 		}
@@ -152,28 +99,27 @@ public class TravailPratiqueNumeroDeux {
 		System.out.println("Probleme resolu avec " + solveur.getBackTrackCount() + " retours arrieres.");
 	}
 
-	private static boolean checkIfEmployeeOneIsWorking(int periode, IntegerVariable debut, IntegerVariable fin, IntegerVariable pause) {
-		// if (periode >= debut) {
-		// if (periode <= fin) {
-		// if (periode != pause) {
-		// return true;
-		// }
-		// }
-		// }
-
-		return false;
+	private static void printScheduleForEmployee(int employeeNumber) {
+		System.out.println("Horaire de l'employé " + employeeNumber + ".");
+		System.out.println("Début : " + solveur.getVar(debuts[employeeNumber]).getVal());
+		System.out.println("Pause : " + solveur.getVar(pauses[employeeNumber]).getVal());
+		System.out.println("Fin : " + solveur.getVar(fins[employeeNumber]).getVal());
 	}
 
-	private static void addEmployeeConstraintToModel(Model model, IntegerVariable debut1, IntegerVariable pause1, IntegerVariable fin1) {
-		model.addConstraint(leq(7, minus(minus(fin1, debut1), 1)));
-		model.addConstraint(geq(5, minus(minus(fin1, debut1), 1)));
-		model.addConstraint(geq(4, minus(fin1, pause1)));
-		model.addConstraint(geq(4, minus(pause1, debut1)));
+	private static void printOffre() {
+		System.out.print("Offre   : ");
+		for (int i = 0; i < p; i++) {
+			System.out.print(solveur.getVar(offres[i]).getVal() + " ");
+		}
+		System.out.println("");
 	}
 
-	private static void addEmployeeVariableToModel(Model m, IntegerVariable debut1, IntegerVariable pause1, IntegerVariable fin1) {
-		m.addVariable(debut1);
-		m.addVariable(pause1);
-		m.addVariable(fin1);
+	private static void printDemande() {
+		System.out.print("Demande : ");
+		for (int i = 0; i < p; i++) {
+			System.out.print(solveur.getVar(demandes[i]).getVal() + " ");
+		}
+		System.out.println("");
+
 	}
 }
