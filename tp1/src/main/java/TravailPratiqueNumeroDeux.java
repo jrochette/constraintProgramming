@@ -41,6 +41,7 @@ public class TravailPratiqueNumeroDeux {
 		demandes[14] = new IntegerConstantVariable(3);
 		demandes[15] = new IntegerConstantVariable(3);
 
+		// Construction des tableaux de variables représentant les employés
 		debuts = new IntegerVariable[n];
 		pauses = new IntegerVariable[n];
 		fins = new IntegerVariable[n];
@@ -57,6 +58,7 @@ public class TravailPratiqueNumeroDeux {
 			model.addConstraint(geq(minus(pauses[i], debuts[i]), 4));
 		}
 
+		// Construction du tableau d'offre
 		offres = new IntegerVariable[p];
 		for (int i = 0; i < p; i++) {
 			offres[i] = makeIntVar("periode " + i, 1, 5);
@@ -76,6 +78,7 @@ public class TravailPratiqueNumeroDeux {
 			model.addConstraint(eq(cout[i], abs(minus(offres[i], demandes[i]))));
 		}
 
+		// Calcul du coût total
 		IntegerVariable coutTotal = makeIntVar("Coût total", 0, 64, Options.V_OBJECTIVE);
 		model.addVariable(coutTotal);
 		model.addConstraint(eq(coutTotal, sum(cout)));
